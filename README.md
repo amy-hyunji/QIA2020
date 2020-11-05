@@ -11,8 +11,10 @@ https://www.kaggle.com/c/qia-hackathon2020
 
 ## How to train
 ```python train.py```
-
+- args setting will be saved as {args.name}.txt
+- ckpt will be saved every epoch under {args.name} file
 
 ## How to test
-```python test.py --name test```
-- this will save test.csv under the `data-dir` you assigned
+```python test.py --ckpt-dir xxx.pt```
+- check if the setting of args is same with training 
+- this will save {args.name}.csv 
