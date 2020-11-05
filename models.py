@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
-from facenet_pytorch import InceptionResNetV1
+from facenet_pytorch import InceptionResnetV1
 
 
 # Pretrained ResNet model from FaceNet(https://github.com/davidsandberg/facenet)
 class FaceResNet(nn.Module):
     def __init__(self, args):
-        super(FaceResNet).__init__()
-        self.resnet = InceptionResNetV1(pretrained="vggface2")
+        super().__init__()
+        self.resnet = InceptionResnetV1(pretrained="vggface2")
         self.linear = nn.Linear(512, args.emb)
         self.net = nn.Sequential(self.resnet, self.linear)
 
@@ -18,7 +18,7 @@ class FaceResNet(nn.Module):
 # Lstm Model to extract video feature from continous images
 class VisualLstm(nn.Module):
     def __init__(self, args):
-        super(VisualLstm).__init__()
+        super().__init__()
         self.lstm = nn.LSTM(
             input_size=args.emb,
             hidden_size=args.emb,
@@ -35,9 +35,9 @@ class VisualLstm(nn.Module):
 # Lstm Model to extract sentence feature
 class LangLstm(nn.Module):
     def __init__(self, args):
-        super(LangLstm).__init__()
+        super().__init__()
         self.lstm = nn.LSTM(
-            input_size=args.emb,
+            input_size=200,
             hidden_size=args.emb,
             dropout=0.2,
             bidirectional=False,
@@ -52,7 +52,7 @@ class LangLstm(nn.Module):
 # Simple Linear Model to predict output from visual & text feature
 class MultiModel(nn.Module):
     def __init__(self, args):
-        super(MultiModel).__init__()
+        super().__init__()
         self.fc1 = nn.Linear(args.emb * 2, args.emb)
         self.fc2 = nn.Linear(args.emb, 7)
         self.relu = nn.ReLU(inplace=True)

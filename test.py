@@ -18,7 +18,7 @@ def test():
     parser.add_argument("--ckpt-dir", type=str, required=True, help="directory to .pt")
     parser.add_argument("--data-dir", default="../qia2020", type=str)
     parser.add_argument("--name", default="default", type=str)
-    parser.add_argument("-embedding-size", default=256, type=int)
+    parser.add_argument("-emb", default=256, type=int)
     parser.add_argument("-text-lstm-layer", default=3, type=int)
     parser.add_argument("-visual-lstm-layer", default=3, type=int)
     parser.add_argument("-learning-rate", default=0.001, type=float)
@@ -39,17 +39,21 @@ def test():
     multi = MultiModel(args)
 
     ckpt = torch.load(args.ckpt_dir)
-    face_resnet.load_state_dict(ckpt["face_resnet"]).to(device).eval()
-    visual_lstm.load_state_dict(ckpt["visual_lstm"]).to(device).eval()
-    lang_lstm.load_state_dict(ckpt["lang_lstm"]).to(device).eval()
-    multi.load_state_dict(ckpt["multi"]).to(device).eval()
+    face_resnet.load_state_dict(ckpt["face_resnet"])
+    face_resnet.to(device).eval()
+    visual_lstm.load_state_dict(ckpt["visual_lstm"])
+    visual_lstm.to(device).eval()
+    lang_lstm.load_state_dict(ckpt["lang_lstm"])
+    lang_lstm.to(device).eval()
+    multi.load_state_dict(ckpt["multi"])
+    multi.to(device).eval()
 
     answerdict = {"FileID": [], "Emotion": []}
 
     for idx, b_data in enumerate(test_dataloader):
 
-        if idx % 100 == 0:
-            print("*** Testing [{i}/{len(test_dataloader)}]")
+        if idx % 500 == 0:
+            print(f"*** Testing [{idx}/{len(test_dataloader)}]")
 
         text = b_data["text"].float().to(device)
         imglist = b_data["image"]
@@ -87,12 +91,13 @@ def test():
         elif pred == 6:
             emo = "sur"
 
-        answerdict["FileID"].append(filename)
+        answerdict["FileID"].append(filename[0])
         answerdict["Emotion"].append(emo)
 
+    print(f"Saving to {args.name}.csv!")
     # Done scanning through test dataset
     df = pd.DataFrame(answerdict)
-    df.to_csv(os.path.join(args.data_dir, f"{name}.csv"), index=False)
+    df.to_csv(f"{args.name}.csv", index=False)
 
 
 if __name__ == "__main__":

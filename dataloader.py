@@ -19,8 +19,8 @@ class DataSet(Dataset):
             # use both train and val for final model
             text_train = os.path.join(args.data_dir, "text_train.npy")
             text_val = os.path.join(args.data_dir, "text_val.npy")
-            label_train = os.path.join(args.data_dir, "label_train.npy")
-            label_val = os.path.join(args.data_dir, "label_val.npy")
+            label_train = os.path.join(args.data_dir, "train_labels.npy")
+            label_val = os.path.join(args.data_dir, "val_labels.npy")
             image_train = os.path.join(args.data_dir, "image_frame_crop_train")
             image_val = os.path.join(args.data_dir, "image_frame_crop_val")
 
@@ -35,7 +35,7 @@ class DataSet(Dataset):
 
         elif mode == "test":
             # no label set for test dataset
-            text = os.path.join(args.data_dir, f"text_{mode}".npy)
+            text = os.path.join(args.data_dir, f"text_{mode}.npy")
             image = os.path.join(args.data_dir, f"image_frame_crop_{mode}")
 
             self.textlist = np.load(text)
@@ -43,8 +43,8 @@ class DataSet(Dataset):
             self.imagelist.sort()
 
         else:
-            text = os.path.join(args.data_dir, f"text_{mode}".npy)
-            label = os.path.join(args.data_dir, f"label_{mode}".npy)
+            text = os.path.join(args.data_dir, f"text_{mode}.npy")
+            label = os.path.join(args.data_dir, f"{mode}_labels.npy")
             image = os.path.join(args.data_dir, f"image_frame_crop_{mode}")
 
             self.textlist = np.load(text)
@@ -54,6 +54,7 @@ class DataSet(Dataset):
 
         if "train" in mode:
             _transform = [
+                transforms.Resize(self.imgsize),
                 transforms.ColorJitter(0.4, 0.4, 0.4, 0.125),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
@@ -62,6 +63,7 @@ class DataSet(Dataset):
 
         else:
             _transform = [
+                transforms.Resize(self.imgsize),
                 transforms.ToTensor(),
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
             ]

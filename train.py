@@ -14,7 +14,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", default="../qia2020", type=str)
     parser.add_argument("--name", default="default", type=str)
-    parser.add_argument("-embedding-size", default=256, type=int)
+    parser.add_argument("-emb", default=256, type=int)
     parser.add_argument("-batch_size", default=32, type=int)
     parser.add_argument("-epoch", default=10, type=int)
     parser.add_argument("-text-lstm-layer", default=3, type=int)
@@ -42,10 +42,10 @@ def main():
     """
     Load Models
     """
-    face_resnet = FaceResNet(args)
-    visual_lstm = VisualLstm(args)
-    lang_lstm = LangLstm(args)
-    multi = MultiModel(args)
+    face_resnet = FaceResNet(args).to(device)
+    visual_lstm = VisualLstm(args).to(device)
+    lang_lstm = LangLstm(args).to(device)
+    multi = MultiModel(args).to(device)
 
     # Loss
     criterion = nn.CrossEntropyLoss()
