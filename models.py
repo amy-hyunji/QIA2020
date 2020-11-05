@@ -3,6 +3,7 @@ import torch.nn as nn
 from facenet_pytorch import InceptionResNetV1
 
 
+# Pretrained ResNet model from FaceNet(https://github.com/davidsandberg/facenet)
 class FaceResNet(nn.Module):
     def __init__(self, args):
         super(FaceResNet).__init__()
@@ -14,6 +15,7 @@ class FaceResNet(nn.Module):
         return self.net(x)
 
 
+# Lstm Model to extract video feature from continous images
 class VisualLstm(nn.Module):
     def __init__(self, args):
         super(VisualLstm).__init__()
@@ -30,6 +32,7 @@ class VisualLstm(nn.Module):
         return output[-1]
 
 
+# Lstm Model to extract sentence feature
 class LangLstm(nn.Module):
     def __init__(self, args):
         super(LangLstm).__init__()
@@ -46,6 +49,7 @@ class LangLstm(nn.Module):
         return output[-1]
 
 
+# Simple Linear Model to predict output from visual & text feature
 class MultiModel(nn.Module):
     def __init__(self, args):
         super(MultiModel).__init__()

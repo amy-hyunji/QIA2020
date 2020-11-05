@@ -8,6 +8,10 @@ from torch.utils.data import DataLoader
 from dataloader import DataSet
 from models import FaceResNet, VisualLstm, LangLstm, MultiModel
 
+"""
+Saves .csv file to submit
+"""
+
 
 def test():
     parser = argparse.ArgumentParser(description=__doc__)
